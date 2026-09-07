@@ -19,7 +19,7 @@ nothing. The pack is the part of DATUM that can refuse.
 
 ```
 datum/
-  DATUM.md                              governing text + dated amendments
+  DATUM.md                              governing text, v2, with its changes-from-v1 section
   schema/gate-verdict.v1.json           the row, as JSON Schema (specification)
   conformance/check.mjs                 reference checker: rows dir in; exit 0, or FAIL lines
   conformance/test.mjs                  the checker's own controls (rule 4 applied to DATUM)
@@ -176,14 +176,14 @@ CI runs the pinned pack green on a pushed commit.
 
 ## 6. Rollout
 
-1. **datum** commit zero: `DATUM.md` with amendments, this design, the
+1. **datum** commit zero: `DATUM.md` v2, this design, the
    research note, README, STATUS. Then the pack: schema, `check.mjs`,
    `test.mjs`, synthetic fixtures. CI runs `test.mjs`. `fixtures/real/`
    stays empty until step 2 produces conforming rows.
 2. **meridian**: `verdict.go` writes `schema`, `gate_sha`, `gate_worktree`;
    `claimability.py` reads the new keys; vendor the pack; CI step; README
-   section; dated amendment to design §7 and a STATUS entry (amendment 2
-   of DATUM). Copy one live and one twin row into `fixtures/real/meridian/`.
+   section; dated amendment to design §7 and a STATUS entry (DATUM's
+   "not a catalog" scope section). Copy one live and one twin row into `fixtures/real/meridian/`.
 3. **baseline**: build `superseded_by` first, since re-emitting the two
    rows otherwise 404s their published URLs (learning
    `2026-08-31-ledger-has-no-supersession`). Then generalize

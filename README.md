@@ -22,6 +22,6 @@ node conformance/check.mjs <dir> # any directory of GATE_VERDICT rows
 
 ## Where things are
 
-`DATUM.md` the rules and their dated amendments · `schema/` the row ·
+`DATUM.md` the rules, the row's invariants, and what changed since v1 · `schema/` the row ·
 `conformance/` checker, controls, fixtures · `docs/` design and research
 notes · dated state lives in `STATUS.md`, not here.

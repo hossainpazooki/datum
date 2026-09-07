@@ -1,15 +1,36 @@
 # DATUM
 
-Date: 2026-09-06
-Status: Proposed. This is one reader's statement of the discipline as built in
-BASELINE, MERIDIAN, PARALLAX and VANTAGE, written before TRAVERSE is built so
-that TRAVERSE carries the same logic. Where a rule is read from committed code
-or a committed design it says so; where it is my inference it says so. Nothing
-here is a claim about any repo's current state; STATUS.md in each repo is.
+Date: 2026-09-06, v2. Status: **governing** for three data-platform
+repositories — **baseline**, **traverse**, **meridian** — by operator ruling
+of this date. PARALLAX is not governed but conforms as the emitter of
+BASELINE's rows. VANTAGE is out of scope.
 
-**2026-09-06, later.** Status changed from Proposed to **governing** for
-baseline, traverse and meridian by operator ruling; see Amendments at the
-end of this file. The body above is kept as written.
+This is one reader's statement of the discipline as built in BASELINE,
+MERIDIAN, PARALLAX and VANTAGE, written before TRAVERSE is built so that
+TRAVERSE carries the same logic. Where a rule is read from committed code or
+a committed design it says so; where it is inference it says so. Nothing
+here is a claim about any repo's current state; STATUS.md in each repo is.
+A rule becomes normative for a repo when that repo pins the conformance pack
+(rule 4); until then the repo's STATUS.md is the record and this text is
+the target.
+
+DATUM is a composition of borrowed mechanics, not an instance of a named
+model. No surveyed conformance regime governs a shared schema across
+independent repositories by a vendored, hash-pinned corpus; the pieces it
+borrows, and the one it adds, are named where they appear and traced in
+`docs/2026-09-06-conformance-suite-precedents.md`.
+
+## Scope: a discipline, not a catalog
+
+The shared thing is the discipline and the row, never a page. BASELINE is
+not a catalog; MERIDIAN's cells do not register into it; no repo's rows are
+copied into another's ledger. Basis, measured 2026-09-06: BASELINE's checker
+refuses all 18 MERIDIAN rows (a PARALLAX check name is bound into its `rows`
+rule, and it cannot hold a second twin per surface and lane), and its page
+builder refuses a second surface by design. This supersedes MERIDIAN design
+§7 ("MERIDIAN's cells land as BASELINE catalog rows") and the first open
+item of MERIDIAN's 2026-09-03 closing handoff; both need a dated amendment
+in MERIDIAN.
 
 ## One sentence
 
@@ -38,9 +59,15 @@ pass and not a soft fail; it halts the thing that depends on it. A missing
 floor, a missing price, a quota not granted, a denylist file that is absent:
 all of these are the third outcome, never coerced into the first two.
 
+In a row the outcome is the exact enum `GREEN | RED | UNEVALUABLE`, and the
+reason is its own field, `unevaluable_reason`, required when the outcome is
+UNEVALUABLE and forbidden otherwise. A reason folded into the outcome string
+is rejected by the checkers that exist.
+
 Read from: MERIDIAN property 4 (missing price is a durable unevaluable
 record), BASELINE denaming sweep (missing list is UNEVALUABLE, never clean),
 TRAVERSE design (instance type with no floor is UNEVALUABLE, not FAIL).
+Enum form read from BASELINE `scripts/lib/ledger.mjs`.
 
 ### 3. A gate that has never gone red is not a gate
 
@@ -56,62 +83,117 @@ The mechanics that make this checkable, not just stated:
 - a twin row carries the planted expectation (which checks, how many
   violations, which mutation);
 - a checker compares the row's actual violations against the planted
-  expectation, key for key, and refuses the credit on any mismatch;
-- two twins that plant different defects are distinguishable by their
-  planted block, so a duplicated twin cannot count twice.
+  expectation, key for key over the union of both key sets, and refuses the
+  credit on any mismatch — a planted check never computed, and a computed
+  violation never planted, are both refusals;
+- twins that plant different defects are distinguishable by their planted
+  block, so a duplicated twin cannot count twice;
+- a property with several twins is credited only when every one of them is
+  red as planted; one red twin does not credit a property that plants three
+  defects.
 
-Read from: BASELINE README crediting rule, MERIDIAN gates/claimability.py
-(re-derives red-as-planted from the row's own contents), MERIDIAN design
-("if a property can't get a twin, it isn't a property, it's a hope").
+A negative control names its reason. The checker is not credited if it
+refuses for another reason, and a refusal nobody planted is itself a
+failure. Neither half is found in the conformance corpora surveyed (Test262,
+JSON Schema Test Suite, toml-test, CommonMark, WPT record an outcome or an
+error class, never a reason); both are standard in compiler testing
+(WebAssembly's `assert_malformed` prefix match; rustc's exhaustive `//~
+ERROR` annotations; GCC's `dg-error` and excess-errors failure).
 
-### 4. The checker has its own negative controls
+Read from: BASELINE README crediting rule and `scripts/lib/ledger.mjs`
+(union-of-keys plant match); MERIDIAN `gates/claimability.py` (twins
+grouped by `planted.mutation`, every twin must independently check out;
+BASELINE's `groupCells` cannot hold two twins, so the multi-twin rule is
+MERIDIAN's); MERIDIAN design ("if a property can't get a twin, it isn't a
+property, it's a hope").
+
+### 4. The checker has its own negative controls, and says what it cannot check
 
 The thing that checks the rows is itself a gate, so it needs its own twins:
-fixtures that must make the checker fail. A checker that has only ever said
-yes has proven nothing. These run in CI before anything is built or published.
+fixtures that must make the checker fail, each carrying the reason it must
+fail for. A checker that has only ever said yes has proven nothing. These
+run in CI before anything is built or published.
 
-Read from: BASELINE scripts/test-ledger.mjs (positive and negative controls
-for check-ledger.mjs), MERIDIAN gates/importpin.py --self-test.
+A checker whose assertions are expressed as a schema can test only what the
+schema can represent, even where the specification mandates more. So the
+checker states what it does not check, and "governed" is never read as
+"machine-checked" for rules the checker cannot reach.
+
+Applied to DATUM itself: the conformance pack under `conformance/` — a
+schema for the row, a reference checker, the checker's own controls, and a
+fixture corpus in which every case carries its expected outcome and every
+negative case its expected reason — enforces rules 1, 3, 5 and 6. Rules 2,
+7, 8, 9, 10, 11 and 12, and this rule's own prose, are not enforced by the
+pack, and each governed repo's DATUM section says so rule by rule. Design:
+`docs/2026-09-06-datum-design.md`.
+
+Read from: BASELINE `scripts/test-ledger.mjs` (positive and negative
+controls for `check-ledger.mjs`), MERIDIAN `gates/importpin.py
+--self-test`. The limitation is read from the JSON Schema Test Suite
+README, which states it of itself.
 
 ### 5. Status is derived, never authored
 
-The claimability table, STATUS page, or status column is computed from rows
-at build time. A status literal found in a row, or a status typed into the
-page, fails the build. The committed rendering is compared against a fresh
-rendering in CI; any drift fails.
+The claimability table, status block, or status column is computed from
+rows at build time. A status literal found in a row, or a status typed into
+the page, fails the build. The committed rendering is compared against a
+fresh rendering in CI; any drift fails.
+
+House rule for STATUS.md, all governed repos: the dated narrative record is
+hand-written and corrected in place (rule 12); the claimability table or
+status block is generated between markers in the same file and compared
+against a fresh rendering by `--check`. Both live in one STATUS.md.
 
 Vocabulary where the siblings agree: CLAIMABLE, PARTIAL, UNCLAIMED,
 UNEVALUABLE for a lane; GREEN and RED for a cell.
 
-Read from: BASELINE README and scripts/build.mjs --check. Note: MERIDIAN
-keeps a hand-written dated STATUS.md as its state of record and derives only
-the claimability table; TRAVERSE's design follows BASELINE (STATUS.md
-generated, never hand-written).
+Read from: BASELINE README and `scripts/build.mjs --check` (the page is
+generated; BASELINE's STATUS.md is hand-written, contrary to what v1 of
+this text said), MERIDIAN STATUS.md (hand-written record, derived
+claimability table).
 
 ### 6. Identity is content plus code plus worktree
 
 A row is bound to three things: a content hash of what was gated, with the
 basis of that hash written next to it (what bytes, what canonical order,
-what library version); the commit SHA of the emitter; and whether that
-emitter's worktree was clean. A row from a dirty worktree is evidence about
-code nobody else can check out. Hashes are taken over normalised bytes when
-the consumer is newline-insensitive, because a pin stricter than its own
-parser only ever produces false alarms.
+what library version); the commit SHA of the emitter, in the field
+`gate_sha`; and whether that emitter's worktree was clean, in
+`gate_worktree`. A row from a dirty worktree is evidence about code nobody
+else can check out. Hashes are taken over normalised bytes when the consumer
+is newline-insensitive, because a pin stricter than its own parser only ever
+produces false alarms.
 
-Read from: BASELINE verdict rows (content_hash, content_hash_basis,
-parallax_sha, parallax_worktree), BASELINE SOURCE.md (LF-normalised
-hashing, caught in CI 2026-08-31).
+The field names are emitter-neutral on purpose. Both existing emitters
+write the literal key `parallax_sha` — MERIDIAN's holding a MERIDIAN commit
+— and both change to `gate_sha`; BASELINE's rows are re-emitted at the new
+key, never edited.
+
+Read from: BASELINE verdict rows (content_hash, content_hash_basis, and the
+sha and worktree fields under their old names), BASELINE SOURCE.md
+(LF-normalised hashing, caught in CI 2026-08-31).
 
 ### 7. Nothing is a claim until the row sits on a pushed SHA
 
-A verdict in a working tree is a draft. It becomes evidence when the
-commit that contains it is on the remote, and the code it names is reachable
-from that commit. Gates that depend on other gates (teardown, cost backfill,
-lane parity) are UNEVALUABLE until the rows they depend on are pushed.
+A verdict in a working tree is a draft. It becomes evidence when the commit
+that contains it is on the remote, and the code it names is reachable from
+that commit. Gates that depend on other gates (teardown, cost backfill, lane
+parity) are UNEVALUABLE until the rows they depend on are pushed.
+
+For runs that can be regenerated (rule 8's second case), the pushed SHA is
+the code and fixtures, and the CI run that regenerated the rows is where
+the rows live; a regenerable row is a claim when that run is green on a
+pushed commit.
+
+A conformance claim is a claim like any other: a repo may state "governed
+by DATUM at `<sha>`" only while its CI runs the pinned pack green, in
+public, on a pushed commit. Borrowed from the Jakarta EE TCK process, the
+one surveyed regime that binds a claim to a hashed suite and a public run
+count.
 
 Read from: TRAVERSE design header and teardown gate, MERIDIAN design header,
 MERIDIAN STATUS.md correction history (a paragraph that said "not pushed"
-was corrected in place when it became false, never deleted).
+was corrected in place when it became false, never deleted). Claim rule
+read from jakarta.ee, TCK Process 1.4.2.
 
 ### 8. Rows that cannot be regenerated cross a hand-copy seam, and the seam is guarded
 
@@ -127,10 +209,15 @@ Where runs CAN be regenerated, rows are build output and are not committed;
 the record is the state-of-record file and CI regenerates the rows on every
 push.
 
+Anything hand-copied across a repository boundary is hash-bound, rows and
+the pack alike: a governed repo vendors the conformance pack at a pinned
+DATUM commit with a sha256 per vendored file, and CI recomputes them. This
+is DATUM's addition; the suites surveyed pin by commit or track a branch,
+and none identifies its consumers' copies by content.
+
 Read from: BASELINE ledger/SOURCE.md (committed rows, hash-bound); MERIDIAN
-STATUS.md (gates/out gitignored, regenerated every run). TRAVERSE is the
-former case and its design does not yet name the binding file or the
-checker (inference from the design doc, 2026-09-05).
+STATUS.md (gates/out gitignored, regenerated every run). Pack binding is
+this text's own rule; see the design.
 
 ### 9. Effects are probed, never read from the action's own report
 
@@ -175,156 +262,72 @@ When a row or a paragraph becomes false, the correction is written next to
 it with the date and what was true when the original was written. History
 of the record is part of the record.
 
+This governs records: rows, STATUS entries, learnings, handoffs. A
+governing text is not a record. It is revised, its history is git, and each
+revision carries a section naming what changed and why — this file's own
+practice, below. Applying the record rule to a governing text produces a
+document whose header is false and whose truth is in an appendix.
+
 Read from: MERIDIAN STATUS.md 2026-09-01 and 2026-09-03 corrections.
 
-## The row, as the siblings shape it
+## The row
 
-The minimal verdict row that satisfies rules 1, 3, 6 and 7. Field names are
-BASELINE's; MERIDIAN adopted them on day one so registration is a copy, not
-a translation.
+The row's field names live in one place, `schema/gate-verdict.v1.json`, and
+nowhere in prose. A table of fields typed into this text drifted from both
+checkers before anyone ran it, which is rule 5's lesson applied to
+documentation. What the text owes the reader is the invariants a row must
+satisfy, all of which the pack enforces:
 
-    kind            GATE_VERDICT
-    surface | stage what was gated
-    lane            which lane of the build
-    cell            live | twin
-    result          GREEN | RED | UNEVALUABLE:<reason>
-    checks          { check_name: violation_count }
-    evaluated       { check_name: rows_evaluated }
-    planted         twin only: { mutation, mutated_rows, expected_violations: {...} }
-    scope           what subset, in words
-    params          the inputs that select the run
-    content_hash    sha256:...
-    content_hash_basis  what bytes, what order, what library version
-    <emitter>_sha   commit of the code that emitted the row
-    <emitter>_worktree  clean | dirty
-    ran_at          UTC timestamp
-    runner          local | ci | <instance>
+- it names its kind, its schema version, its surface, its lane, and its
+  cell (rules 1, 3);
+- a twin carries its planted expectation and a live row carries none
+  (rule 3);
+- its outcome is the exact three-value enum, with the reason in its own
+  field (rule 2);
+- every check it reports has an evaluated denominator, and a denominator
+  of zero forces UNEVALUABLE (rule 2);
+- it is bound to content, code and worktree under emitter-neutral names
+  (rule 6);
+- `rows` is optional in the shared row — a repo may require it and bind it
+  to a named check in its own checker, as BASELINE does; `lane` is any
+  integer from 1 whose meaning the repo's design defines; `runner` is any
+  non-empty string, with `local` and `ci` conventional;
+- repo-specific measurements (throughput, latency, cost, dataset revision
+  and licence) go under `metrics` and never displace a field above.
 
-Repo-specific measurements (throughput, latency, cost per thousand, price
-per hour used, dataset revision and licence) go under a metrics block and do
-not displace the fields above.
+Field names are BASELINE's except where v1 of this text was wrong about
+them (rule 6); MERIDIAN adopted BASELINE's on day one, so both emitters
+change together, by the same diff.
 
-## Where TRAVERSE's 2026-09-05 design stands against this
+## Changes from v1
 
-Verified against the design doc, not against any code (none exists).
+v1 is the 2026-09-06 brief plus nine appended amendments, on `a5299a5`.
+v2 folds the amendments into the body and makes the changes below.
 
-- Carries rules 2, 3 (the statement), 5, 7, 9, 11 as written.
-- Rule 3 mechanics: missing. No cell field, no planted block, PASS/FAIL
-  instead of GREEN/RED, "a twin fixture that must fail" rather than "fails
-  for exactly the planted reason".
-- Rule 4: partially. Gates have twin fixtures; the status builder's own
-  negative controls are not named.
-- Rule 6: partially. git_sha present; no worktree flag, no content hash
-  basis (manifest shas serve as content identity, basis unstated).
-- Rule 8: the binding file and recomputing checker are not named.
-- Rule 10: floors.json exists; provenance of floors unstated.
-- Rule 12: no statement; adopt MERIDIAN's practice.
-- Runtime twins (tc throttle, cgroup io.max) are Linux-only and need the
-  rented box, so they are not CI-reproducible; the siblings' twins all run
-  in CI. Day 3's fresh-clone CPU reproduction covers fixture twins only.
-
-## What this brief does not decide
-
-Whether TRAVERSE registers into BASELINE's catalog (different domain; the
-row schema costs nothing to adopt either way). Whether floors are set from
-a prior public benchmark or from the first run's own numbers, which would
-make the first run's PASS circular. Whether MERIDIAN's hand-written
-STATUS.md or BASELINE's generated one is the house rule; the two coexist
-today and this brief records both.
-
----
-
-# Amendments — 2026-09-06 (governing)
-
-The text above is kept as written on 2026-09-06 morning. Each amendment
-below is dated and names what it corrects; per rule 12 nothing above is
-erased. Where an amendment and the text disagree, the amendment governs.
-
-1. **Status: governing, not proposed.** Operator ruling, 2026-09-06: DATUM
-   is the governing document for three data-platform repositories —
-   **baseline, traverse, meridian**. PARALLAX is not governed but conforms
-   as the emitter of BASELINE's rows. VANTAGE is out of scope. A rule
-   becomes normative for a repo when that repo pins the conformance pack
-   (amendment 7); until then the repo's own STATUS.md is the record and
-   this document is the target.
-
-2. **BASELINE is not the catalog.** Operator ruling, 2026-09-06: MERIDIAN's
-   cells do not register into BASELINE, and no repo's rows are copied into
-   another's ledger. The shared thing is the discipline and the row, not a
-   page. This supersedes MERIDIAN design §7 ("MERIDIAN's cells land as
-   BASELINE catalog rows") and the first "Open / next" item of MERIDIAN's
-   2026-09-03 closing handoff; both need a dated amendment in MERIDIAN.
-   Basis for the ruling, measured the same day: BASELINE's checker refuses
-   all 18 MERIDIAN rows (`rows must equal evaluated.no_future_accepted`, a
-   PARALLAX check name baked into the checker; and a second twin per
-   surface/lane, which `groupCells` cannot hold), and `build.mjs` refuses a
-   second surface by design.
-
-3. **The row, corrected.** The table under "The row, as the siblings shape
-   it" says field names are BASELINE's and that MERIDIAN adopted them. True
-   of fifteen keys, false of the identity keys, and the table itself
-   diverges from both checkers. Row schema v1 (design doc
-   `docs/2026-09-06-datum-design.md`) fixes each measured drift:
-   - `schema: "datum/gate-verdict/1"` — new required key.
-   - `gate_sha`, `gate_worktree` replace the `<emitter>_sha` placeholder.
-     No emitter implemented the placeholder: PARALLAX and MERIDIAN both
-     write the literal key `parallax_sha`, MERIDIAN's holding a MERIDIAN
-     commit. Both emitters change; BASELINE's two rows are re-emitted, never
-     edited.
-   - `result` is the exact enum `GREEN | RED | UNEVALUABLE`. The reason
-     moves to a separate `unevaluable_reason`, required when the result is
-     UNEVALUABLE and forbidden otherwise. The `UNEVALUABLE:<reason>` form in
-     the table is rejected by BASELINE's checker today and appears in
-     TRAVERSE's design; TRAVERSE changes.
-   - `rows` is optional in the shared row. A repo may require it and bind
-     it to a named check in its own checker, as BASELINE does.
-   - `lane` is an integer from 1 whose meaning each repo defines in its
-     design. `runner` is any non-empty string; `local` and `ci` are the
-     conventional values.
-   - Multi-twin crediting is the shared rule, taken from MERIDIAN: at most
-     one live row per surface and lane; twins unique by `planted.mutation`;
-     credit requires the live row GREEN and every twin RED with `checks`
-     equal to `planted.expected_violations` over the union of keys and at
-     least one non-zero.
-
-4. **Rule 5, corrected and decided.** The text says TRAVERSE follows
-   BASELINE in generating STATUS.md. BASELINE's STATUS.md is hand-written;
-   only its page is generated. House rule, operator ruling 2026-09-06: the
-   dated narrative record is hand-written and corrected in place (rule 12);
-   the claimability table or status block is generated between markers in
-   the same STATUS.md and compared against a fresh rendering by `--check`.
-   Applies to all three governed repos.
-
-5. **Rules 7 and 8, reconciled.** For runs that can be regenerated, the
-   pushed SHA is the code and fixtures, and the CI run that regenerated the
-   rows is where the rows live. A regenerable row is a claim when that run
-   is green on a pushed commit. Rule 7's "the row sits on a pushed SHA"
-   applies unchanged to hand-copied rows (rule 8's first case).
-
-6. **Rule 3's mechanics, attributed.** The fourth mechanic (twins
-   distinguished by their planted block, so a duplicate cannot count twice)
-   is read from MERIDIAN `gates/claimability.py`, which groups twins by
-   `planted.mutation`. BASELINE's `groupCells` cannot hold two twins at all.
-   The checker's own negative controls (rule 4) are read from BASELINE
-   `scripts/test-ledger.mjs` and MERIDIAN `gates/importpin.py --self-test`.
-
-7. **Rule 4 applied to DATUM: the conformance pack.** DATUM ships a JSON
-   Schema for the row, a reference checker, the checker's own negative
-   controls, and a fixture corpus in which every case carries its expected
-   outcome and every negative case its expected failure reason. Each
-   governed repo vendors the pack at a pinned DATUM commit, hashes the
-   vendored files in a pin file, and runs the pack in CI over its own
-   emitted rows. The pack enforces rules 1, 3, 5 and 6. Rules 2, 4, 7, 8,
-   9, 10, 11 and 12 are prose, and each repo's DATUM section says so rule by
-   rule. A repo may say "governed by DATUM at commit X" only while its CI
-   runs the pack at X green. Design: `docs/2026-09-06-datum-design.md`.
-   Precedents and their limits: `docs/2026-09-06-conformance-suite-precedents.md`.
-
-8. **TRAVERSE's gap list, one addition.** Its design uses
-   `UNEVALUABLE:quota-not-granted`; under amendment 3 that is
-   `result: UNEVALUABLE` plus `unevaluable_reason`. The other gaps stand as
-   listed.
-
-9. **"What this brief does not decide", updated.** The catalog question is
-   decided (amendment 2). The STATUS house rule is decided (amendment 4).
-   Floor provenance for TRAVERSE remains open.
+- Status: proposed → governing, with the three-repo scope and PARALLAX's
+  emitter-only role. Ruling recorded in the header.
+- "Not a catalog" added as a scope section, with the measured basis and
+  the MERIDIAN texts it supersedes.
+- Rule 2: exact enum plus `unevaluable_reason`; the `UNEVALUABLE:<reason>`
+  form is withdrawn (TRAVERSE's design uses it and changes).
+- Rule 3: union-of-keys mechanic stated; multi-twin crediting added and
+  attributed to MERIDIAN; the named-reason and unplanned-refusal clauses
+  added with their compiler-test precedents.
+- Rule 4: "says what it cannot check" added; the pack and the list of
+  which rules it enforces added.
+- Rule 5: house rule for STATUS.md decided; the false statement that
+  BASELINE's STATUS.md is generated corrected.
+- Rule 6: `gate_sha` / `gate_worktree` replace the `<emitter>_sha`
+  placeholder no emitter implemented.
+- Rule 7: reconciled with rule 8 for regenerable runs; the conformance
+  claim clause added with its Jakarta precedent.
+- Rule 8: the vendored pack brought under the hash-binding rule, marked as
+  DATUM's addition.
+- Rule 12: records distinguished from governing texts; this section is the
+  consequence.
+- The row table removed in favour of invariants and the schema file.
+- The TRAVERSE gap list moved to the traverse repo
+  (`docs/2026-09-06-datum-gaps.md`), where a per-repo report belongs under
+  rule 1. One gap added there: the outcome form under rule 2.
+- "What this brief does not decide" removed: the catalog and STATUS
+  questions are decided above; floor provenance is TRAVERSE's open item.
