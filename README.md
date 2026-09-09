@@ -16,9 +16,14 @@ their own emitted rows.
 ## Verify
 
 ```
-node conformance/test.mjs        # the pack's own controls
-node conformance/check.mjs <dir> # any directory of GATE_VERDICT rows
+node conformance/test.mjs --mutate   # the pack's own controls; each rule disabled in turn must be noticed
+node conformance/check.mjs <dir>     # any directory of GATE_VERDICT rows: exit 0 conform, 1 refused, 2 unevaluable
 ```
+
+A governed repo vendors `conformance/` (plus a copy of
+`schema/gate-verdict.v1.json` beside `check.mjs`) and a `PIN` written by
+`check.mjs --write-pin <datum-sha>`; its CI runs `test.mjs`, then
+`check.mjs <rows> --verify-pin`.
 
 ## Where things are
 

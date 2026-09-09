@@ -1,6 +1,7 @@
 # DATUM conformance pack — design
 
-2026-09-06. Status: **PROPOSED, nothing built.** Governs how `DATUM.md`
+2026-09-06. Status: **PROPOSED, nothing built** when written; **built
+2026-09-09**, with the deviations recorded in §10. Governs how `DATUM.md`
 binds the three repos it governs (baseline, traverse, meridian). Approach A
 of three considered (a `datum` repo with an executable pack; vendored text
 only; BASELINE's checker as reference implementation) — chosen by the
@@ -233,3 +234,59 @@ which condition.
 - Whether `fixtures/real/` rows are updated by a bot or by hand. By hand
   until there is a third governed repo.
 - Floor provenance for TRAVERSE (DATUM rule 10).
+
+## 10. Built 2026-09-09, and what moved from §1–§8
+
+Status of the sections above: **built** as written except where this
+section says otherwise. Built: `schema/gate-verdict.v1.json`;
+`conformance/check.mjs` (subset validator, nine row rules, four set rules,
+crediting, `--json`, `--verify-pin`, `--write-pin`, exit codes 0/1/2);
+`conformance/test.mjs` (the three conditions, vocabulary coverage,
+real-row hash binding, CLI exit-code and PIN exercises, `--mutate`,
+`--write-status` / `--check-status`); `conformance/reasons.md`; 13
+positive and 46 negative fixtures; `fixtures/real/SOURCE.md` (empty
+binding); CI on Node 20 and 24. Measured at build: `test.mjs --mutate`
+green, 17 reasons, 13 rules each detected disabled by at least one
+fixture; over MERIDIAN's 18 rows at `a087ab2`, `check.mjs` exits 1 with
+five refusals per row, all in the two planned families (three missing
+required fields `schema`, `gate_sha`, `gate_worktree`; two unknown fields
+`parallax_sha`, `parallax_worktree`), and after the planned rename plus
+`schema` key in a scratch copy it exits 0 with all seven surfaces
+CLAIMABLE and twin counts 1/1/1/2/1/3/2, matching MERIDIAN's own
+`claimability.py`.
+
+Deviations from the sections above, each made at build and each
+checkable in the code:
+
+- **§2**: `schema` is an enum, not a pattern, so an unknown version refuses
+  with `must be one of` like the other exact literals. A negative count
+  in `checks` is a schema refusal only; the live-with-violations rule
+  counts positives, so a fixture plants one defect, not two.
+- **§3**: `UNCLAIMED` is never derived from a directory (no rows, no
+  group). It is a status only a repo's own STATUS.md can carry for a lane
+  it has not run. The status-literal rule reads object keys as well as
+  string values: an adversarial pass on the first green build smuggled
+  `CLAIMABLE` in as a `params` key and was not refused; it is now.
+- **§7**: every regular file in the rows directory is a row. The first
+  build filtered on a lowercase `.json` extension and silently skipped the
+  rest; the same adversarial pass hid a live-RED row as `BAD.JSON` and got
+  exit 0. Now a file that does not parse as JSON makes the directory
+  unevaluable (exit 2), and nothing is skipped by name.
+- **§4**: a fixture may carry `rows` (an array) instead of `row` for
+  set-level cases; the case wrapper is otherwise as designed. `reasons.md`
+  also names the rule-table entry behind each reason, since that is the
+  unit `--mutate` disables.
+- **§5**: the vendored set gains a copy of `schema/gate-verdict.v1.json`
+  beside `check.mjs` (the checker loads it from there, falling back to
+  `../schema/` inside this repo), and `check.mjs --write-pin <datum-sha>`
+  writes `PIN` over every file in the vendored directory. `--verify-pin`
+  refuses a listed file that is missing or altered and an unlisted file
+  that is present.
+- **§8**: the mutation self-test does not edit a copy of `check.mjs`; the
+  rule table is exported and `checkRows` takes a set of disabled rules.
+  Same property, no file rewriting. A second condition was added: with
+  every rule disabled, every negative fixture must be accepted, so no
+  refusal can live outside the table.
+- **DATUM's own STATUS.md**: the reserved generated block is rendered by
+  `test.mjs --write-status` (fixture and rule counts from a green run) and
+  compared in CI by `--check-status` (rule 5 applied to this repo).
