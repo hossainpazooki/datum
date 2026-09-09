@@ -192,8 +192,13 @@ try {
   // ---------- PIN: a vendored copy verifies, an edited one does not ----------
   const vend = join(scratch, "vendor", "datum");
   cpSync(HERE, vend, { recursive: true, filter: (s) => !s.endsWith("PIN") });
-  // the vendoring contract: the schema is copied beside check.mjs
-  cpSync(join(HERE, "..", "schema", "gate-verdict.v1.json"), join(vend, "gate-verdict.v1.json"));
+  // the vendoring contract: the schema is copied beside check.mjs. In the
+  // datum repo it lives under ../schema/; in a vendored copy it is already
+  // beside this file (found 2026-09-09 when MERIDIAN first ran the vendored
+  // self-test: the ../schema/ path does not exist outside datum).
+  const schemaSrc = [join(HERE, "gate-verdict.v1.json"), join(HERE, "..", "schema", "gate-verdict.v1.json")].find(existsSync);
+  if (!schemaSrc) fail("pin", "schema gate-verdict.v1.json not found beside test.mjs or under ../schema/");
+  else cpSync(schemaSrc, join(vend, "gate-verdict.v1.json"));
   const sha = "0".repeat(40);
   r = spawnSync(process.execPath, [join(vend, "check.mjs"), "--write-pin", sha], { encoding: "utf8" });
   if (r.status !== 0) fail("pin write", `exit ${r.status}: ${r.stderr}`);

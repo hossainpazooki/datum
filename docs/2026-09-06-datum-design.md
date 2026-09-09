@@ -290,3 +290,18 @@ checkable in the code:
 - **DATUM's own STATUS.md**: the reserved generated block is rendered by
   `test.mjs --write-status` (fixture and rule counts from a green run) and
   compared in CI by `--check-status` (rule 5 applied to this repo).
+
+Found at the first adoption (MERIDIAN, 2026-09-09), after the pack was
+pushed:
+
+- **§5, location**: a Go module cannot hold the pack under `vendor/` — the
+  toolchain treats that directory as module vendoring and refuses to build
+  without `vendor/modules.txt` ("inconsistent vendoring", `go vet ./...`
+  exit 1). A governed repo places the pack where its toolchain allows;
+  MERIDIAN uses `gates/datum/`. The contract is the file set, the `PIN`,
+  and the CI order, not the path.
+- **§8, the self-test when vendored**: `test.mjs` copied the schema from
+  `../schema/`, which exists only inside this repo, so the vendored
+  self-test crashed on its PIN exercise. It now takes the schema from
+  beside itself first. A pack whose self-test only runs at home was never
+  a vendored pack; this one line is the difference.
