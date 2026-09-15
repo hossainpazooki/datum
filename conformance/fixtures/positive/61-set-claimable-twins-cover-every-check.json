@@ -1,5 +1,5 @@
 {
-  "case": "a live GREEN with two twins RED as planted, distinct mutations",
+  "case": "no single twin sets every live check nonzero, but the twins together do: the group is CLAIMABLE",
   "expect": "PASS",
   "expect_credit": [
     {
@@ -20,11 +20,13 @@
       "result": "GREEN",
       "checks": {
         "duplicate_absorbed": 0,
-        "collision_refused": 0
+        "collision_refused": 0,
+        "order_preserved": 0
       },
       "evaluated": {
         "duplicate_absorbed": 1,
-        "collision_refused": 1
+        "collision_refused": 1,
+        "order_preserved": 1
       },
       "scope": "fixtures/base, all 71 records",
       "params": {
@@ -46,12 +48,14 @@
       "cell": "twin",
       "result": "RED",
       "checks": {
-        "duplicate_absorbed": 0,
-        "collision_refused": 1
+        "duplicate_absorbed": 1,
+        "collision_refused": 1,
+        "order_preserved": 0
       },
       "evaluated": {
         "duplicate_absorbed": 1,
-        "collision_refused": 1
+        "collision_refused": 1,
+        "order_preserved": 1
       },
       "scope": "fixtures/base with one planted same-key collision",
       "params": {
@@ -68,8 +72,9 @@
         "mutation": "collision_payload",
         "mutated_rows": 1,
         "expected_violations": {
-          "duplicate_absorbed": 0,
-          "collision_refused": 1
+          "duplicate_absorbed": 1,
+          "collision_refused": 1,
+          "order_preserved": 0
         }
       }
     },
@@ -81,14 +86,16 @@
       "cell": "twin",
       "result": "RED",
       "checks": {
-        "duplicate_absorbed": 3,
-        "collision_refused": 0
+        "duplicate_absorbed": 0,
+        "collision_refused": 1,
+        "order_preserved": 2
       },
       "evaluated": {
         "duplicate_absorbed": 1,
-        "collision_refused": 1
+        "collision_refused": 1,
+        "order_preserved": 1
       },
-      "scope": "fixtures/base with one planted same-key collision",
+      "scope": "fixtures/base with one planted reordered pair",
       "params": {
         "viewpoint": 71
       },
@@ -100,11 +107,12 @@
       "runner": "local",
       "rows": 71,
       "planted": {
-        "mutation": "duplicate_fill",
-        "mutated_rows": 3,
+        "mutation": "reorder_pair",
+        "mutated_rows": 2,
         "expected_violations": {
-          "duplicate_absorbed": 3,
-          "collision_refused": 0
+          "duplicate_absorbed": 0,
+          "collision_refused": 1,
+          "order_preserved": 2
         }
       }
     }

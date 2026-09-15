@@ -18,6 +18,11 @@ jobs:
         node: ["20", "24"]
     steps:
       - uses: actions/checkout@v4
+        with:
+          # the wording control refuses a commit sha of this repo's own
+          # history anywhere in the vendored set; in this layout it reads
+          # that history with git and fails on a shallow clone
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
@@ -25,3 +30,21 @@ jobs:
         run: node conformance/test.mjs --mutate
       - name: STATUS.md generated block is fresh
         run: node conformance/test.mjs --check-status
+      - name: the shape a governed repo ships, from a temp copy
+        # A governed repo holds the pack under gates/conformance/ with the
+        # schema beside check.mjs and a PIN that --write-pin wrote, and its
+        # CI verifies the pin alone before running the vendored self-test.
+        # Build exactly that shape here, pinned to this workflow's own
+        # commit, and run exactly that order: a pack whose self-test passes
+        # only at home, or only without its own PIN beside it, is not the
+        # pack a governed repo ships (the second was found 2026-09-14: the
+        # wording control refused the PIN's first line).
+        run: |
+          set -eu
+          d="$(mktemp -d)/gates/conformance"
+          mkdir -p "$d"
+          cp -r conformance/. "$d"
+          cp schema/gate-verdict.v1.json "$d/"
+          node "$d/check.mjs" --write-pin "$GITHUB_SHA"
+          node "$d/check.mjs" --verify-pin
+          node "$d/test.mjs" --mutate

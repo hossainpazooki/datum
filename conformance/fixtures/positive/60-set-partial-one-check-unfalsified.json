@@ -1,5 +1,5 @@
 {
-  "case": "two surfaces each with their own live row",
+  "case": "a live GREEN with two checks and one twin RED as planted that sets only one of them nonzero: the other check was never seen to fail, so the group is PARTIAL",
   "expect": "PASS",
   "expect_credit": [
     {
@@ -7,20 +7,8 @@
       "lane": 1,
       "status": "PARTIAL",
       "live": "GREEN",
-      "twins": 0,
+      "twins": 1,
       "unfalsified": [
-        "collision_refused",
-        "duplicate_absorbed"
-      ]
-    },
-    {
-      "surface": "example-lane1-p2",
-      "lane": 1,
-      "status": "PARTIAL",
-      "live": "GREEN",
-      "twins": 0,
-      "unfalsified": [
-        "collision_refused",
         "duplicate_absorbed"
       ]
     }
@@ -56,19 +44,19 @@
     {
       "schema": "datum/gate-verdict/1",
       "kind": "GATE_VERDICT",
-      "surface": "example-lane1-p2",
+      "surface": "example-lane1-p1",
       "lane": 1,
-      "cell": "live",
-      "result": "GREEN",
+      "cell": "twin",
+      "result": "RED",
       "checks": {
         "duplicate_absorbed": 0,
-        "collision_refused": 0
+        "collision_refused": 1
       },
       "evaluated": {
         "duplicate_absorbed": 1,
         "collision_refused": 1
       },
-      "scope": "fixtures/base, all 71 records",
+      "scope": "fixtures/base with one planted same-key collision",
       "params": {
         "viewpoint": 71
       },
@@ -78,7 +66,15 @@
       "gate_worktree": "clean",
       "ran_at": "2026-09-09T00:00:00Z",
       "runner": "local",
-      "rows": 71
+      "rows": 71,
+      "planted": {
+        "mutation": "collision_payload",
+        "mutated_rows": 1,
+        "expected_violations": {
+          "duplicate_absorbed": 0,
+          "collision_refused": 1
+        }
+      }
     }
   ]
 }

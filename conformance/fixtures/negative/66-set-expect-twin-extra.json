@@ -1,15 +1,18 @@
 {
-  "case": "a live GREEN with two twins RED as planted, distinct mutations",
-  "expect": "PASS",
-  "expect_credit": [
-    {
-      "surface": "example-lane1-p1",
-      "lane": 1,
-      "status": "CLAIMABLE",
-      "live": "GREEN",
-      "twins": 2
-    }
-  ],
+  "case": "rows hold a twin mutation the expect block does not list for its cell",
+  "expect": "FAIL",
+  "expect_reason": "twin mutation set differs for example-lane1-p1:lane1",
+  "expect_file": {
+    "cells": [
+      {
+        "surface": "example-lane1-p1",
+        "lane": 1,
+        "twins": [
+          "collision_payload"
+        ]
+      }
+    ]
+  },
   "rows": [
     {
       "schema": "datum/gate-verdict/1",

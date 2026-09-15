@@ -1,30 +1,16 @@
 {
-  "case": "two surfaces each with their own live row",
-  "expect": "PASS",
-  "expect_credit": [
-    {
-      "surface": "example-lane1-p1",
-      "lane": 1,
-      "status": "PARTIAL",
-      "live": "GREEN",
-      "twins": 0,
-      "unfalsified": [
-        "collision_refused",
-        "duplicate_absorbed"
-      ]
-    },
-    {
-      "surface": "example-lane1-p2",
-      "lane": 1,
-      "status": "PARTIAL",
-      "live": "GREEN",
-      "twins": 0,
-      "unfalsified": [
-        "collision_refused",
-        "duplicate_absorbed"
-      ]
-    }
-  ],
+  "case": "rows hold a cell the expect block does not name",
+  "expect": "FAIL",
+  "expect_reason": "unexpected cell example-lane1-p2:lane1",
+  "expect_file": {
+    "cells": [
+      {
+        "surface": "example-lane1-p1",
+        "lane": 1,
+        "twins": []
+      }
+    ]
+  },
   "rows": [
     {
       "schema": "datum/gate-verdict/1",
