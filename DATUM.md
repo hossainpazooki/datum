@@ -331,3 +331,116 @@ v2 folds the amendments into the body and makes the changes below.
   rule 1. One gap added there: the outcome form under rule 2.
 - "What this brief does not decide" removed: the catalog and STATUS
   questions are decided above; floor provenance is TRAVERSE's open item.
+
+## Amendment, 2026-09-14 (pack CLI hardening)
+
+Rule 12 applied to this text: the conformance pack's CLI (`conformance/
+check.mjs`, rule 4's checker) is now stricter about what it accepts and
+what it refuses to skip silently -- an extra argument, an unrecognised
+flag, and a rows-directory entry that is not a regular file are now
+refused rather than tolerated or dropped, `--verify-pin` can now be run
+alone to confirm the pack before anything else runs, and an entry point
+reached through a symlink or a junction now actually runs. None of this
+changes a rule above, a row invariant, or what "governed" means; it closes
+gaps in the checker's own robustness that rule 4 already calls for ("says
+what it cannot check" applies in reverse to what it silently let through).
+Full account: `STATUS.md` 2026-09-14 (second entry that date) and
+`docs/2026-09-06-datum-design.md` §10 addendum.
+
+## Amendment, 2026-09-14 (per-check crediting and the expected set)
+
+Rule 12 applied to this text; rule 3 and rule 5 are sharpened, not rewritten.
+
+**Ruling R3, per-check falsification.** A gate is credited per check, not
+per gate. For each (surface, lane), every check the live row reports must
+have been set nonzero by at least one twin that is RED as planted; a check
+no twin has ever made fail has not been shown to be a check, so the group
+derives PARTIAL, never CLAIMABLE, and the pack names the unfalsified checks.
+This is a crediting rule, not a refusal: a conforming set still exits 0.
+The operator's ruling refuses credit rather than tolerating a never-red
+check, knowing MERIDIAN drops from seven CLAIMABLE surfaces to two at its
+next re-vendor.
+
+**Ruling R4, the expected set.** The pack gains `--expect <file>`, landed
+in the same pack move: a governed repo states which (surface, lane) cells
+its rows must hold and the exact twin mutations each must carry, and the
+pack refuses an unexpected cell, an expected cell with no rows, and a twin
+mutation set that differs, each for its own named reason. The expected set
+never asserts a status; statuses stay derived (rule 5). A malformed expect
+file is unevaluable (rule 2). Full account: `STATUS.md` 2026-09-14 (third
+entry that date) and `docs/2026-09-06-datum-design.md` §10 addendum.
+
+## Amendment, 2026-09-14 (vendored-set wording and adoption docs)
+
+Rule 12 applied to this text; rule 6 (says what it cannot check) and rule 7
+(governed means vendored) are sharpened, not rewritten.
+
+**Ruling R1, pack wording.** The public wording rule -- a governed repo
+names this text once, "a private governing text," with no path, no commit
+sha, no rule number -- now covers the vendored pack's own bytes, not only
+what a governed repo writes about it: a governed repo that vendors
+`conformance/` verbatim was otherwise vendoring the name into its own,
+public, repository on every mention the pack's comments and fixtures
+happened to carry. `test.mjs` gained a control enforcing this over the
+vendored file set (`conformance/` plus `schema/gate-verdict.v1.json`): the
+name appears exactly once, in `check.mjs`'s header; elsewhere it is refused
+unless it is the schema identifier literal or the PIN format's own first
+line, both of which the ruling keeps as machine fields rather than prose.
+This is not a new row invariant or a new refusal a governed repo's rows can
+trigger -- it is a control over the pack's own text, the same self-application
+rule 4 already asks of the checker turned on the pack's remaining prose.
+
+`README.md` gained an adoption order and a named list of what the pack does
+not check (several conditions an emitter can fold into one count, a
+comparator exercised only by unit tests never bound into a real-row
+fixture, and anything outside the rows handed to one invocation) -- rule 6
+made concrete for a first-time adopter rather than left to be rediscovered
+per repo. Full account: `STATUS.md` 2026-09-14 (fourth entry that date).
+
+## Amendment, 2026-09-14 (vendoring path and pack fixes)
+
+Rule 12 applied to this text; rules 7 and 8 are sharpened, not rewritten.
+
+**Ruling R7, one vendoring path.** Every governed repo vendors the pack into
+`gates/conformance/`, with the schema file beside `check.mjs` and the `PIN`
+that `check.mjs --write-pin` wrote. The path had been left to each repo
+since a Go module cannot use `vendor/`; it is now the same everywhere, so
+the shape this repo's CI builds and tests is the shape every governed repo
+ships.
+
+**Ruling R1, restated for what it covers.** The vendored bytes name this
+text only in `check.mjs`'s header phrase, the schema identifier literal, and
+the PIN's first line as code; and whether or not the name is on the line,
+they carry no local path, rule number, ruling or contract id, section-sign
+citation, or commit sha of this repo. The generated `PIN` is not authored
+text and is not scanned: its first line stays a machine field. Before this
+amendment the pack's own control refused that line, so every vendored copy
+holding a `PIN` failed its self-test.
+
+No rule or row invariant changes otherwise. The checker now refuses
+`--write-pin` given anything beside its sha. The real-row fixture layout
+counts every file in a repo directory. A (surface, lane) with an
+UNEVALUABLE row derives UNEVALUABLE and is never credited per check. An
+expect file carrying the same key twice is unevaluable. Full account:
+`STATUS.md` 2026-09-14 (fifth entry that date) and the design doc's
+addendum "vendoring path and pack fixes".
+
+## Amendment, 2026-09-14 (row files, the PIN, and wording names)
+
+Rule 12 applied to this text; rules 2 and 7 are sharpened, not rewritten.
+
+**Decision D2, an ambiguous row.** A row file carrying the same key twice in
+one object, at any depth, is unevaluable (rule 2): exit 2, the same class as
+a file that is not JSON. A JSON parser keeps one of the two values without a
+word, so such a row has no single reading to refuse or credit.
+
+**Ruling R1, restated for what it covers.** The wording rule over the
+vendored bytes covers file and directory names as well as file contents,
+since a `PIN` lists every file name. The schema identifier literal and the
+PIN's first line are machine forms only in code and data files, never in
+markdown prose. The `PIN` is left out of the scan only in a vendored copy and
+only after it verifies, and a verified `PIN` now names nothing but the pack's
+own files, once each; in this repo's own layout a `PIN` is authored text and
+refused. No row invariant or refusal reason changes. Full account:
+`STATUS.md` 2026-09-14 (sixth entry that date) and the design doc's
+addendum "P11 and the round-3 refutations".
