@@ -444,3 +444,43 @@ own files, once each; in this repo's own layout a `PIN` is authored text and
 refused. No row invariant or refusal reason changes. Full account:
 `STATUS.md` 2026-09-14 (sixth entry that date) and the design doc's
 addendum "P11 and the round-3 refutations".
+
+## Amendment, 2026-09-15 (where a twin plants its defect)
+
+Rule 12 applied to this text; rule 3 is sharpened, not rewritten.
+
+**Ruling R9, the twin's defect may sit in the component under test.** Rule 3
+defines a twin as "a copy of the input with exactly one planted defect."
+Read literally, that admits only data twins, and a check whose live
+predicate is over the gate's own machinery can then never be falsified.
+The case: MERIDIAN P2's `fresh_process_identical` compares two
+fresh-process replays of one feed by the production binary. The fold is
+pure and the feed is its only input, so no data twin makes two replays
+differ; an environment input is not available, because the binary reads
+only its flags; and planting non-determinism into the production fold would
+break the property under test. Under ruling R3 the property could never
+leave PARTIAL. The operator ruled, from three options (a gates-local twin
+binary; the same defect behind a build tag in production source; accept
+PARTIAL for P2), that a twin may plant its one defect in a sibling of the
+component under test that the gate runs in the twin's place. For P2 that is
+`gates/p2nondet`: the production fold and snapshot with a per-process nonce
+added to the document, built only by the gate and never shipped; nothing
+under `cmd/` or `internal/` changes. MERIDIAN's P7 twins already did this
+before the ruling (a Reader that serves the wrong feed as base, a Reader
+that mislabels the snapshot hash, in `gates/p7_test.go`); this amendment
+records that reading rather than introducing it.
+
+What such a twin credits, exactly: that the live check reports the defect
+when the component carries it, which is what every data twin credits about
+its check. It does not show that the production component can produce the
+defect, and a governed repo's text must not say it does. The planted block
+keeps its shape: `mutation` names the defect, `mutated_rows` is 0 when no
+input row changed, `expected_violations` names the checks and their counts.
+No row invariant, refusal reason or crediting rule changes; the pack cannot
+tell where a defect was planted and does not try.
+
+Declined, recorded so they are not re-proposed: the build-tagged switch
+(buys nothing over a gates-local binary and puts a defect switch on the
+audit path of every release build); accepting PARTIAL for P2. Full account:
+`STATUS.md` 2026-09-15 (third entry that date). The MERIDIAN change lands
+under its own STATUS entry.
